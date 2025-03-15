@@ -197,7 +197,7 @@ mcp = FastMCP(
     "mcp-dnsdumpster",
     dependencies=["httpx"],
     command="python3",
-    args=["-m", "dnsdumpster_mcp_server.server"]
+    args=["-m", "mcp_dnsdumpster.server"]
 )
 
 
