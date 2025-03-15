@@ -16,6 +16,8 @@ A Model Context Protocol (MCP) server for interacting with the DNSDumpster API, 
 - Support for domain map generation (Plus accounts)
 - Rate limiting and caching
 
+[![PyPI version](https://badge.fury.io/py/mcp-dnsdumpster.svg)](https://pypi.org/project/mcp-dnsdumpster/)
+
 ## Installation
 
 ```bash
@@ -79,4 +81,3 @@ uv run server.py
 
 MIT
 
-[![PyPI version](https://badge.fury.io/py/mcp-dnsdumpster.svg)](https://pypi.org/project/mcp-dnsdumpster/)
