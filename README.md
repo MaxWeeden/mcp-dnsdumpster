@@ -78,3 +78,5 @@ uv run server.py
 ## License
 
 MIT
+
+[![PyPI version](https://badge.fury.io/py/mcp-dnsdumpster.svg)](https://pypi.org/project/mcp-dnsdumpster/)
