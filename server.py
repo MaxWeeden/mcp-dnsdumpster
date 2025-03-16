@@ -113,21 +113,19 @@ class DNSDumpsterClient:
     async def get_dns_records(
         self, 
         domain: str,
-        page: Optional[int] = None,
-        generate_map: bool = False
+        page: Optional[int] = None
     ) -> DNSData:
         """Query the DNSDumpster API for a domain's DNS records.
         
         Args:
             domain: Domain name to query
             page: Page number for pagination (Plus accounts only)
-            generate_map: Whether to generate a domain map (Plus accounts only)
         
         Returns:
             Dictionary containing DNS records
         """
         # Check cache first
-        cache_key = f"{domain}:{page or 1}:{int(generate_map)}"
+        cache_key = f"{domain}:{page or 1}"
         cached_data = await self.cache.get(cache_key)
         if cached_data:
             return cached_data
@@ -141,9 +139,6 @@ class DNSDumpsterClient:
         
         if page is not None:
             params["page"] = str(page)
-        
-        if generate_map:
-            params["map"] = "1"
         
         # Retry logic for network errors
         max_retries = 3
@@ -547,59 +542,6 @@ async def get_cname_records(domain: str, ctx: Context) -> str:
                 output_lines.append(f"Target: {target}")
             
             return "\n".join(output_lines)
-        finally:
-            await client.close()
-            
-    except Exception as e:
-        return f"Error: {str(e)}"
-
-
-@mcp.tool()
-async def generate_domain_map(domain: str, ctx: Context) -> Union[Image, str]:
-    """Generate a visual map of a domain's DNS infrastructure (Plus accounts only).
-    
-    Args:
-        domain: The domain name to query (e.g., example.com)
-        ctx: Request context
-    
-    Returns:
-        An image of the domain map or an error message
-    """
-    if not domain:
-        return "Error: Domain is required"
-    
-    # Validate domain
-    if not is_valid_domain(domain):
-        return "Error: Invalid domain name format"
-    
-    try:
-        api_key = os.environ.get("DNSDUMPSTER_API_KEY")
-        if not api_key:
-            return "Error: API key not configured. Set DNSDUMPSTER_API_KEY environment variable."
-        
-        client = DNSDumpsterClient(api_key)
-        
-        try:
-            ctx.info(f"Generating domain map for {domain}")
-            result = await client.get_dns_records(domain, generate_map=True)
-            
-            if "map" not in result or not result["map"]:
-                return "Domain map generation not available. This feature requires a Plus account."
-            
-            # Return the map as an image
-            map_data = result["map"]
-            if isinstance(map_data, str):
-                # If it's base64 encoded data
-                return Image(data=map_data, format="png")
-            elif isinstance(map_data, dict) and "url" in map_data:
-                # If it's a URL to the image
-                map_url = map_data["url"]
-                async with httpx.AsyncClient() as client:
-                    response = await client.get(map_url)
-                    response.raise_for_status()
-                    return Image(data=response.content, format="png")
-            else:
-                return "Unexpected format for domain map data"
         finally:
             await client.close()
             

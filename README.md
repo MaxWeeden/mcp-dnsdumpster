@@ -13,7 +13,6 @@ A Model Context Protocol (MCP) server for interacting with the DNSDumpster API, 
   - NS records
   - Banner information where available
 - Support for pagination (Plus accounts)
-- Support for domain map generation (Plus accounts)
 - Rate limiting and caching
 
 [![PyPI version](https://badge.fury.io/py/mcp-dnsdumpster.svg)](https://pypi.org/project/mcp-dnsdumpster/)
@@ -69,7 +68,6 @@ uv run server.py
 - "Show me all subdomains for example.com"
 - "What are the mail servers for microsoft.com?"
 - "Tell me about the DNS infrastructure for twitter.com"
-- "Generate a visual map of Facebook's domain structure"
 
 ## Development
 
